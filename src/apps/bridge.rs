@@ -97,9 +97,14 @@ impl Component for App {
             _ = writeln!(board, "-");
         }
 
-        if self.revealed {
+        if self.revealed || done {
             _ = writeln!(board);
-            _ = writeln!(board, "Cards so far:");
+
+            if done {
+                _ = writeln!(board, "Entire game:");
+            } else {
+                _ = writeln!(board, "Cards so far:");
+            }
 
             if self.cards.is_empty() {
                 _ = writeln!(board, "-");
