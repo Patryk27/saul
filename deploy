@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+set -ex
+
+~/.cargo/bin/trunk build --release
+
+ssh gateway \
+    'mkdir -p /tmp/saul'
+
+rsync -avz --delete dist/ gateway:/tmp/saul
+
+ssh gateway \
+    'sudo machinectl copy-to nginx /tmp/saul /var/www/saul --force'
+
+ssh gateway \
+    "sudo systemd-run -t --machine nginx /run/current-system/sw/bin/bash -c '/run/current-system/sw/bin/chmod 777 -R /var/www/saul'"
+
+ssh gateway \
+    'rm -rf /tmp/saul'
+
+echo 'Ok, done'

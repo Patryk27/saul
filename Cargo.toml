@@ -1,0 +1,16 @@
+[package]
+name = "saul"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+getrandom = { version = "0.2", features = ["js"] }
+rand = "0.8.5"
+yew = { version = "0.20.0", features = ["csr"] }
+yew-router = "0.17"
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+opt-level = "z"
+lto = true
