@@ -1,5 +1,7 @@
 use core::fmt::{self, Write};
 use rand::{seq::SliceRandom, Rng};
+use wasm_bindgen::JsCast;
+use web_sys::HtmlElement;
 use yew::prelude::*;
 
 #[derive(Debug)]
@@ -128,29 +130,46 @@ impl Component for App {
                 <div class="actions">
                     if done {
                         <button
-                            onclick={ctx.link().callback(|_| Message::Restart)}>
+                            onclick={ ctx.link().callback(|_| Message::Restart) }>
                             { "Restart" }
                         </button>
                     } else {
                         <button
-                            onclick={ctx.link().callback(|_| Message::NextCard)}>
+                            class="next-card"
+                            onclick= { ctx.link().callback(|_| Message::NextCard) }>
                             { "Next Card" }
                         </button>
 
                         if self.revealed {
                             <button
-                                onclick={ctx.link().callback(|_| Message::HideCards)}>
+                                onclick={ ctx.link().callback(|_| Message::HideCards) }>
                                 { "Hide Cards" }
                             </button>
                         } else {
                             <button
-                                onclick={ctx.link().callback(|_| Message::RevealCards)}>
+                                onclick={ ctx.link().callback(|_| Message::RevealCards) }>
                                 { "Reveal Cards" }
                             </button>
                         }
                     }
                 </div>
             </div>
+        }
+    }
+
+    fn rendered(&mut self, _: &Context<Self>, first_render: bool) {
+        if first_render {
+            web_sys::window()
+                .unwrap()
+                .document()
+                .unwrap()
+                .query_selector("#app-bridge .next-card")
+                .unwrap()
+                .unwrap()
+                .dyn_ref::<HtmlElement>()
+                .unwrap()
+                .focus()
+                .unwrap();
         }
     }
 }
